@@ -228,6 +228,25 @@ ghcCollectors = [
             "Sum of par_max_copied_bytes across all parallel GCs"
             CounterType
             cumulative_par_max_copied_bytes
+#if MIN_VERSION_base(4,11,0)
+    , statsCollector
+            "ghc_cumulative_par_balanced_copied_bytes_total"
+            "Sum of par_balanced_copied bytes across all parallel GCs"
+            CounterType
+            cumulative_par_balanced_copied_bytes
+#endif
+#if MIN_VERSION_base(4,12,0)
+    , statsCollector
+            "ghc_init_cpu_seconds_total"
+            "Total CPU time used by the init phase"
+            CounterType
+            (rtsTimeToSeconds . init_cpu_ns)
+    , statsCollector
+            "ghc_init_elapsed_seconds_total"
+            "Total elapsed time used by the init phase"
+            CounterType
+            (rtsTimeToSeconds . init_elapsed_ns)
+#endif
     , statsCollector
             "ghc_mutator_cpu_seconds_total"
             "Total CPU time used by the mutator"
@@ -258,6 +277,38 @@ ghcCollectors = [
             "Total elapsed time (at the previous GC)"
             CounterType
             (rtsTimeToSeconds . elapsed_ns)
+#if MIN_VERSION_base(4,14,1)
+--    , statsCollector
+--            "ghc_nonmoving_gc_sync_cpu_seconds"
+--            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
+--            CounterType
+--            (rtsTimeToSeconds . nonmoving_gc_sync_cpu_ns)
+    , statsCollector
+            "nonmoving_gc_sync_elapsed_seconds"
+            "The time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
+            CounterType
+            (rtsTimeToSeconds . nonmoving_gc_sync_elapsed_ns)
+    , statsCollector
+            "nonmoving_gc_sync_max_elapsed_seconds"
+            "The maximum time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
+            CounterType
+            (rtsTimeToSeconds . nonmoving_gc_sync_max_elapsed_ns)
+    , statsCollector
+            "nonmoving_gc_cpu_seconds"
+            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
+            CounterType
+            (rtsTimeToSeconds . nonmoving_gc_cpu_ns)
+    , statsCollector
+            "nonmoving_gc_elapsed_seconds"
+            "The time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
+            CounterType
+            (rtsTimeToSeconds . nonmoving_gc_elapsed_ns)
+    , statsCollector
+            "nonmoving_gc_max_elapsed_seconds"
+            "The maximum time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
+            CounterType
+            (rtsTimeToSeconds . nonmoving_gc_max_elapsed_ns)
+#endif
 
     , statsCollector
             "ghc_gcdetails_gen"
@@ -312,6 +363,13 @@ ghcCollectors = [
             "In parallel GC, the max amount of data copied by any one thread"
             GaugeType
             (gcdetails_par_max_copied_bytes . gc)
+#if MIN_VERSION_base(4,11,0)
+    , statsCollector
+            "ghc_gcdetails_par_balanced_copied_bytes"
+            "In parallel GC, the amount of balanced data copied by all threads"
+            GaugeType
+            (gcdetails_par_balanced_copied_bytes . gc)
+#endif
     , statsCollector
             "ghc_gcdetails_sync_elapsed_seconds"
             "The time elapsed during synchronisation before GC"
@@ -327,6 +385,18 @@ ghcCollectors = [
             "The time elapsed during GC itself"
             GaugeType
             (rtsTimeToSeconds . gcdetails_elapsed_ns . gc)
+#if MIN_VERSION_base(4,14,1)
+--    , statsCollector
+--            "gcdetails_nonmoving_gc_sync_cpu_seconds"
+--            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
+--            GaugeType
+--            (rtsTimeToSeconds . gcdetails_nonmoving_gc_sync_cpu_ns . gc)
+    , statsCollector
+            "gcdetails_nonmoving_gc_sync_elapsed_seconds"
+            "The time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
+            GaugeType
+            (rtsTimeToSeconds . gcdetails_nonmoving_gc_sync_elapsed_ns . gc)
+#endif
   ]
 
 -- | Convert from 'RtsTime' (nanoseconds) to seconds with nanosecond precision.
