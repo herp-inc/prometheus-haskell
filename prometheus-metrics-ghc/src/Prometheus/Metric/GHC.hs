@@ -278,11 +278,14 @@ ghcCollectors = [
             CounterType
             (rtsTimeToSeconds . elapsed_ns)
 #if MIN_VERSION_base(4,14,1)
---    , statsCollector
---            "ghc_nonmoving_gc_sync_cpu_seconds"
---            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
---            CounterType
---            (rtsTimeToSeconds . nonmoving_gc_sync_cpu_ns)
+-- Currently, GHC does not provide any meaningful value for `nonmoving_gc_sync_cpu_ns`.
+{-
+    , statsCollector
+            "ghc_nonmoving_gc_sync_cpu_seconds"
+            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
+            CounterType
+            (rtsTimeToSeconds . nonmoving_gc_sync_cpu_ns)
+-}
     , statsCollector
             "nonmoving_gc_sync_elapsed_seconds"
             "The time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
@@ -386,11 +389,14 @@ ghcCollectors = [
             GaugeType
             (rtsTimeToSeconds . gcdetails_elapsed_ns . gc)
 #if MIN_VERSION_base(4,14,1)
---    , statsCollector
---            "gcdetails_nonmoving_gc_sync_cpu_seconds"
---            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
---            GaugeType
---            (rtsTimeToSeconds . gcdetails_nonmoving_gc_sync_cpu_ns . gc)
+-- Currently, GHC does not provide any meaningful value for `gcdetails_nonmoving_gc_sync_cpu_ns`.
+{-
+    , statsCollector
+            "gcdetails_nonmoving_gc_sync_cpu_seconds"
+            "The CPU time used during the post-mark pause phase of the concurrent nonmoving GC"
+            GaugeType
+            (rtsTimeToSeconds . gcdetails_nonmoving_gc_sync_cpu_ns . gc)
+-}
     , statsCollector
             "gcdetails_nonmoving_gc_sync_elapsed_seconds"
             "The time elapsed during the post-mark pause phase of the concurrent nonmoving GC"
