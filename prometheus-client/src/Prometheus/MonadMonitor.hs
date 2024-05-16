@@ -1,6 +1,8 @@
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Prometheus.MonadMonitor (
     MonadMonitor (..)
@@ -14,7 +16,9 @@ import Control.Applicative (Applicative)
 import Control.Monad.Identity (Identity, runIdentity)
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Class (MonadTrans)
+#if !MIN_VERSION_transformers(0,6,0)
 import Control.Monad.Trans.Error (ErrorT, Error)
+#endif
 import Control.Monad.Trans.Except (ExceptT)
 import Control.Monad.Trans.Identity (IdentityT)
 import Control.Monad.Trans.Maybe (MaybeT)
@@ -39,7 +43,9 @@ class Monad m => MonadMonitor m where
 instance MonadMonitor IO where
     doIO = id
 
+#if !MIN_VERSION_transformers(0,6,0)
 instance (Error e, MonadMonitor m) => MonadMonitor (ErrorT e m)
+#endif
 instance (MonadMonitor m) => MonadMonitor (ExceptT e m)
 instance (MonadMonitor m) => MonadMonitor (IdentityT m)
 instance (MonadMonitor m) => MonadMonitor (MaybeT m)
